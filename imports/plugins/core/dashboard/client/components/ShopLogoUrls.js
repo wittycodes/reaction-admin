@@ -30,8 +30,8 @@ const shopLogoUrlsSchema = new SimpleSchema({
   "shopLogoUrls": Object,
   "shopLogoUrls.primaryShopLogoUrl": {
     type: String,
-    regEx: SimpleSchema.RegEx.Url,
-    optional: true
+    regEx: `${SimpleSchema.RegEx.Url}|(^$)`, // a URL or an empty string
+    optional: true,
   }
 });
 
@@ -88,11 +88,11 @@ export default function ShopLogoUrls() {
   } = useReactoForm({
     async onSubmit(formData) {
       setIsSubmitting(true);
-      await handleUpdateUrls(shopLogoUrlsSchema.clean(formData));
+      await handleUpdateUrls(shopLogoUrlsSchema.clean(formData, { removeEmptyStrings: false }));
       setIsSubmitting(false);
     },
     validator(formData) {
-      return validator(shopLogoUrlsSchema.clean(formData));
+      return validator(shopLogoUrlsSchema.clean(formData, { removeEmptyStrings: false }));
     },
     value: shop
   });
